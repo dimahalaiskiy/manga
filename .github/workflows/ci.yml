@@ -31,9 +31,9 @@ jobs:
 
       - name: Deploy to Vercel
         run: |
-          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
             echo "Deploying to PRODUCTION on Vercel"
-            # Trigger deployment for the PRODUCTION branch (main)
+            # Trigger deployment for the PRODUCTION branch (master)
             curl -X POST -d '{}' https://api.vercel.com/v1/integrations/deploy/YOUR_VERCEL_DEPLOYMENT_HOOK_URL
           elif [[ $GITHUB_REF == 'refs/heads/dev' ]]; then
             echo "Deploying to STAGING on Vercel"
@@ -42,7 +42,7 @@ jobs:
           fi
 
       - name: Send success notification to Discord (PRODUCTION)
-        if: success() && github.ref == 'refs/heads/main'
+        if: success() && github.ref == 'refs/heads/master'
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"content": "✅ PRODUCTION Deployment succeeded on Vercel! 🚀"}' \
@@ -56,7 +56,7 @@ jobs:
           https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
 
       - name: Send failure notification to Discord (PRODUCTION)
-        if: failure() && github.ref == 'refs/heads/main'
+        if: failure() && github.ref == 'refs/heads/master'
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"content": "❌ PRODUCTION Deployment failed on Vercel. Please check the logs."}' \
