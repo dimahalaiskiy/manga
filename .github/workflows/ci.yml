@@ -48,25 +48,25 @@ jobs:
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"content": "🎉 PRODUCTION Deployment succeeded on Vercel! 🚀"}' \
-          YOUR_DISCORD_WEBHOOK_URL
+          https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
 
       - name: Send success notification to Discord (STAGING)
         if: success() && github.ref == 'refs/heads/dev'
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"content": "🎉 STAGING Deployment succeeded on Vercel! 🚀"}' \
-          YOUR_DISCORD_WEBHOOK_URL
+          https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
 
       - name: Send failure notification to Discord (PRODUCTION)
         if: failure() && github.ref == 'refs/heads/main'
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"content": "❌ PRODUCTION Deployment failed on Vercel. Please check the logs."}' \
-          YOUR_DISCORD_WEBHOOK_URL
+          https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
 
       - name: Send failure notification to Discord (STAGING)
         if: failure() && github.ref == 'refs/heads/dev'
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"content": "❌ STAGING Deployment failed on Vercel. Please check the logs."}' \
-          YOUR_DISCORD_WEBHOOK_URL
+          https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
