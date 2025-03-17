@@ -1,17 +1,21 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [master]
+    branches:
+      - main # PRODUCTION branch
+      - dev # STAGING branch
   pull_request:
-    branches: [master]
+    branches:
+      - main
+      - dev
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -23,22 +27,44 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run linting
-        run: yarn run lint || true
+        run: yarn lint || true
 
       - name: Deploy to Vercel
         run: |
-          curl -X POST -d '{}' https://api.vercel.com/v1/integrations/deploy/prj_fsuryGcA1L3yAmrHZX0PymPuBd4V/5ASAnATa7B
+          if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            echo "Deploying to PRODUCTION on Vercel"
+            # Trigger deployment for the PRODUCTION branch (main)
+            curl -X POST -d '{}' https://api.vercel.com/v1/integrations/deploy/YOUR_VERCEL_DEPLOYMENT_HOOK_URL
+          elif [[ $GITHUB_REF == 'refs/heads/dev' ]]; then
+            echo "Deploying to STAGING on Vercel"
+            # Trigger deployment for the STAGING branch (dev)
+            curl -X POST -d '{}' https://api.vercel.com/v1/integrations/deploy/YOUR_VERCEL_DEPLOYMENT_HOOK_URL
+          fi
 
-      - name: Send success notification to Discord
-        if: success()
+      - name: Send success notification to Discord (PRODUCTION)
+        if: success() && github.ref == 'refs/heads/main'
         run: |
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"content": "🎉 Deployment of Mantra App PRODUCTION succeeded on Vercel! 🚀"}' \
+          -d '{"content": "🎉 PRODUCTION Deployment succeeded on Vercel! 🚀"}' \
           https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
 
-      - name: Send failure notification to Discord
-        if: failure()
+      - name: Send success notification to Discord (STAGING)
+        if: success() && github.ref == 'refs/heads/dev'
         run: |
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"content": "❌ Deployment of Mantra App PRODUCTION failed on Vercel. Please check the logs."}' \
+          -d '{"content": "🎉 STAGING Deployment succeeded on Vercel! 🚀"}' \
+          https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
+
+      - name: Send failure notification to Discord (PRODUCTION)
+        if: failure() && github.ref == 'refs/heads/main'
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"content": "❌ PRODUCTION Deployment failed on Vercel. Please check the logs."}' \
+          https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
+
+      - name: Send failure notification to Discord (STAGING)
+        if: failure() && github.ref == 'refs/heads/dev'
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"content": "❌ STAGING Deployment failed on Vercel. Please check the logs."}' \
           https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
