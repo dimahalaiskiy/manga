@@ -9,4 +9,4 @@ interface NextAuthProviderProps {
 
 export function NextAuthProvider({ children }: NextAuthProviderProps): JSX.Element {
   return <SessionProvider>{children}</SessionProvider>;
-} 
+}

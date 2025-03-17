@@ -18,4 +18,4 @@ export const siteConfig: SiteConfig = {
     twitter: "https://twitter.com/yourusername",
     github: "https://github.com/yourusername",
   },
-}; 
+};
