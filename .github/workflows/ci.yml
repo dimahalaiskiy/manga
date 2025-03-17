@@ -25,9 +25,6 @@ jobs:
       - name: Run linting
         run: yarn run lint || true
 
-      - name: Build project
-        run: yarn build
-
       - name: Deploy to Vercel
         run: |
           curl -X POST -d '{}' https://api.vercel.com/v1/integrations/deploy/prj_fsuryGcA1L3yAmrHZX0PymPuBd4V/5ASAnATa7B
@@ -36,12 +33,12 @@ jobs:
         if: success()
         run: |
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"content": "🎉 Deployment succeeded on Vercel! 🚀"}' \
+          -d '{"content": "🎉 Deployment of Mantra App PRODUCTION succeeded on Vercel! 🚀"}' \
           https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
 
       - name: Send failure notification to Discord
         if: failure()
         run: |
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"content": "❌ Deployment failed on Vercel. Please check the logs."}' \
+          -d '{"content": "❌ Deployment of Mantra App PRODUCTION failed on Vercel. Please check the logs."}' \
           https://discord.com/api/webhooks/1351285466011406356/qteE9pl7U_KJDXoArOAUjCfS3jgAvyrFgcqGhTNM4Ztw8PdlKo7pz9LYQBbB_odcZW8o
